@@ -1,0 +1,11 @@
+# Análisis y tratamiento de lecturas de sensores MAG en la misión Venus Express
+**Integrantes**
+- Gutierrez Sánchez Angélica
+- Hernández Jiménez Erick Yael
+
+## Resumen
+Este proyecto busca aplicar lo aprendido en la materia de Análisis y Adquisición de Señales. Se rcolectan las lecturas del magnetómetro (_MAG_) en la misión _Venus Express_ publicados el 29 de septiembre de 2009 [[1]](https://archives.esac.esa.int/psa/ftp/VENUS-EXPRESS/MAG/VEX-V-Y-MAG-2-V1.0/DATA/) en la fase de monitoreo en óribta de Venus. Luego, se analizan para comprender la naturaleza del fenómeno que se mide. Posteriormente, se diseñan los filtros por aplicar para obtener, entonces, una señal de salida la pureza que nuestro diseño permita.
+
+**Palabras clave**: _magnetómetro_, _tratamiento de señales_, _campo magnético_, _misión Venus Express_. 
+
+## Introducción
