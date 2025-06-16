@@ -112,6 +112,7 @@ def plot_data(TIME_UTC, BISX, BISY, BISZ, BIST, BOSX, BOSY, BOSZ, BOST, BIS_BOS_
 def plot_differences(TIME_UTC, BIS_BOS_X, BIS_BOS_Y, BIS_BOS_Z, BIS_BOS_T, output_file:str)->None:
     r"""
     Plot the differences between BIS and BOS magnetic field components.
+    
     :param TIME_UTC: List of UTC times.
     :param BIS_BOS_X: List of differences in X component.
     :param BIS_BOS_Y: List of differences in Y component.
@@ -142,14 +143,45 @@ def plot_differences(TIME_UTC, BIS_BOS_X, BIS_BOS_Y, BIS_BOS_Z, BIS_BOS_T, outpu
     plt.savefig(output_file)
     plt.close()
 
+def plot_component(utc_timestamp: list[pd.Timestamp], component: list[float], title: str, output_file: str) -> None:
+    r"""
+    Grafica y guarda en `output_filename` el componente `component` contra el tiempo `utc_timestamp`
+    
+    :param utc_timestamp: list[pd.Timestamp]    _Lista de marcas de tiempo._
+    :param component: list[float]   _Lista de valores del componente a lo largo del tiempo._
+    :param output_file: str _Ruta en la que se guarda la gráfica._ 
+    
+    :return: None
+    """
+    logging.info(f"Plotting component and saving to {output_file}")
+    plt.figure(figsize=(200, 60))
+    plt.plot(utc_timestamp, component, label='Component', color='red')  #type:ignore
+    logging.debug(f"Component data: {component[:5]}...")
+    
+    plt.xticks(rotation=45)
+    plt.grid(True)
+    plt.xlabel('Time (UTC)') 
+    plt.ylabel('Magnetic Field (nT)')
+    plt.title(title)
+    
+    plt.legend()
+    
+    plt.savefig(output_file)
+    plt.close()
+    
 def main():
     file_path = 'data/content/BIO_20060514_DOY134_D001_V1.csv'
     output_file = 'data/assets/BIO_20060514_DOY134_D001_V1.png'
 
     TIME_UTC, BISX, BISY, BISZ, BIST, BOSX, BOSY, BOSZ, BOST, BIS_BOS_X, BIS_BOS_Y, BIS_BOS_Z, BIS_BOS_T = retrieve_data(file_path)
 
-    plot_data(TIME_UTC, BISX, BISY, BISZ, BIST, BOSX, BOSY, BOSZ, BOST, BIS_BOS_X, BIS_BOS_Y, BIS_BOS_Z, BIS_BOS_T, output_file)
-    plot_differences(TIME_UTC, BIS_BOS_X, BIS_BOS_Y, BIS_BOS_Z, BIS_BOS_T, 'data/assets/BIO_20060514_DOY134_D001_V1_differences.png')
+    #   plot_data(TIME_UTC, BISX, BISY, BISZ, BIST, BOSX, BOSY, BOSZ, BOST, BIS_BOS_X, BIS_BOS_Y, BIS_BOS_Z, BIS_BOS_T, output_file)
+    #   plot_differences(TIME_UTC, BIS_BOS_X, BIS_BOS_Y, BIS_BOS_Z, BIS_BOS_T, 'data/assets/BIO_20060514_DOY134_D001_V1_differences.png')
+    
+    plot_component(TIME_UTC, BOSX, "BOSX component", 'data/assets/BOSX.png')
+    plot_component(TIME_UTC, BOSY, "BOSX component", 'data/assets/BOSY.png')
+    plot_component(TIME_UTC, BOSZ, "BOSX component", 'data/assets/BOSZ.png')
+    plot_component(TIME_UTC, BIS_BOS_T, "(BIS-BOS)T figure", 'data/assets/BIS_BOS_T.png')
     logging.info("Plots generated successfully.")
 
 if __name__ == "__main__":
