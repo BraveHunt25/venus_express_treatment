@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+from matplotlib.dates import DateFormatter
+from matplotlib.ticker import MaxNLocator
 import numpy as np
 import pandas as pd
 import logging
@@ -35,6 +37,7 @@ def retrieve_data(file_path:str) -> tuple[list[pd.Timestamp], list[float], list[
         values = line.strip().split(',')
         logging.debug(f"Processing line: {values}")
         TIME_UTC.append(pd.to_datetime(values[0]))
+        logging.debug(f"Adding {pd.to_datetime(values[0])}")
         BISX.append(float(values[1]))
         BISY.append(float(values[2]))
         BISZ.append(float(values[3]))
@@ -154,14 +157,19 @@ def plot_component(utc_timestamp: list[pd.Timestamp], component: list[float], ti
     :return: None
     """
     logging.info(f"Plotting component and saving to {output_file}")
-    plt.figure(figsize=(200, 60))
+    plt.figure(figsize=(250, 30))
     plt.plot(utc_timestamp, component, label='Component', color='red')  #type:ignore
     logging.debug(f"Component data: {component[:5]}...")
     
+    # plot every 3600 x label
+    plt.subplots_adjust(left=0.03, right=0.99, top=0.95, bottom=0.15)
+    plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True, prune='both', nbins=len(utc_timestamp)//3600 if len(utc_timestamp)//3600 > 0 else 1))
+    plt.gca().xaxis.set_major_formatter(DateFormatter('%H:%M'))
     plt.xticks(rotation=45)
+    plt.legend(fontsize=24)
     plt.grid(True)
-    plt.xlabel('Time (UTC)') 
-    plt.ylabel('Magnetic Field (nT)')
+    plt.xlabel('Time (UTC)', fontsize=32)
+    plt.ylabel('Magnetic Field (nT)', fontsize=32)
     plt.title(title)
     
     plt.legend()
