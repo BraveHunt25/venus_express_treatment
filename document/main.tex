@@ -226,15 +226,6 @@ donde:
 \vspace{0.2cm}
 La elección adecuada de \( R \) y \( C \) permite controlar qué tan rápido se atenúan las frecuencias más altas, asegurando que se conserve el contenido significativo de la señal mientras se eliminan fluctuaciones no deseadas.
 
-\subsection{Filtro rechaza bandas}
-Un filtro rechaza bandas es un tipo de filtro diseñado para atenuar o eliminar una rango específico de frecuencias, mientras que deja pasar tanto las frecuencias más bajas como las más altas. Es útil cuando se desea suprimir una banda de frecuencias no deseadas, como ruido o interferencias, sin afectar el resto del contenido espectral \cite{oppenheim2010}.
-
-La función principal de este filtro es rechazar una banda central de frecuencia \( f_c \), definida entre dos frecuencias: la frecuencia de corte inferior \textit{ \( f_L \)} y la frecuencia de corte superior \textit{ \( f_H \)}. El ancho de la banda eliminada se conoce como el ancho de banda de rechazo y se calcula de la siguiente manera:
-
-\begin{equation}
-\Delta f = f_H - f_L
-\end{equation}
-
 % A lo largo del desarrollo, si es necesario, solo agregaría algunos fenómenos que disturben las lecturas esperadas.
     \section{Metodología}
         A continuación, se describe el procedimiento a seguir para obtener la señal filtrada. En \cite{repogithub} se encuentra disponible el cuaderno de pruebas .IPYNB con la trayectoria del desarrollo y comentarios necesarios para comprender el código desarrollado.
@@ -243,23 +234,28 @@ La función principal de este filtro es rechazar una banda central de frecuencia
             Los datos utilizados fueron descargados del repositorio oficial de la Agencia Espacial Europea (ESA), correspondientes al instrumento MAG (Magnetómetro) de la misión Venus Express. Se seleccionaron los archivos CSV del primer día de medición, con frecuencia de muestreo de 1 Hz, ideales para estudios globales del campo magnético. 
 
         \subsection{Selección del sistema de referencia BOS}
-            Se optó por trabajar con las señales BOSX, BOSY y BOSZ, correspondientes al sensor externo del magnetómetro. Esto se debe a que el sensor BOS se encuentra alejado del fuselaje de la nave, por lo que sus lecturas presentan menor contaminación electromagnética en comparación con el sensor BIS. Además, permite una medición más confiable del campo magnético ambiental. 
+Se optó por trabajar con las señales BOSX, BOSY y BOSZ, correspondientes al sensor externo del magnetómetro. Esto se debe a que el sensor BOS se encuentra alejado del fuselaje de la nave, por lo que sus lecturas presentan menor contaminación electromagnética en comparación con el sensor BIS. Además, permite una medición más confiable del campo magnético ambiental. 
 
         \subsection{Visualización de la señal}
-            Para visualizar los datos captados por los sensores se optó por usar Python. Este lenguaje de programación de alto nivel cuenta con las librerías \textit{MatPlotLib} para la generación de gráficas y \textit{NumPy} para la manipulación de datos n-dimensionales y marcas de tiempo. El código empleado se encuentra disponible en \cite{repogithub}.
+	Para la visualización de los datos obtenidos por los sensores, se empleó el lenguaje de programación Python, ampliamente utilizado en el ámbito científico por su versatilidad y facilidad de uso. En particular, se utilizaron las bibliotecas \textit{Matplotlib} para la generación de gráficos y \textit{NumPy} para la manipulación eficiente de arreglos multidimensionales y el manejo de marcas temporales. El código fuente desarrollado para este análisis se encuentra disponible en el repositorio mencionado en \cite{repogithub}.
 
         \subsection{Procesamiento de la señal}
-            Aplicando los filtros y herramientas de análisis incluidos en \textit{Numpy}, primero se hará el análisis de frecuencias de los componentes BOSX, BOSY y BOSZ. A partir de este análisis, se aplicará el filtro pasa bajas necesario para obtener una primera señal más limpia. 
+	Aplicando los filtros y herramientas de análisis proporcionados por la biblioteca \textit{NumPy}, se inicia el proceso con un análisis espectral de los componentes BOSX, BOSY y BOSZ. Este análisis permite identificar las frecuencias predominantes en cada señal. Con base en esta información, se aplica un filtro pasa bajas para atenuar el ruido de alta frecuencia y obtener una primera versión depurada de la señal.
+
+        A continuación, se realiza una segunda inspección espectral mediante la Transformada Rápida de Fourier (FFT), lo que permite evaluar la eficacia del filtrado inicial. Finalmente, se aplica un filtro rechaza banda diseñado para eliminar componentes de frecuencia específicas, con el objetivo de ajustar la señal filtrada lo más posible a las características de la señal original.
 
         \subsection{Cálculo del modulo total BOST}
-            Tras haber filtrado los componentes, se calcula la magnitud total de la señal obteniendo la raíz cuadrada de la elevación al cuadrado de cada componente individual. Esta señal se dibuja para su posterior análisis y comparación.  
+        Una vez aplicados los filtros correspondientes a cada componente de la señal, se procede al cálculo del módulo total del campo magnético en el sistema BOS. Este valor se obtiene mediante la raíz cuadrada de la suma de los cuadrados de cada componente individual.
 
         \subsection{Comparación con BOST de la ESA}
-            Finalmente, con los resultados obtenidos, se realizará la comparación entre la señal procesada con los filtros y la señal BOST proporcionada originalmente para, entonces, interpretar la señal.
+        Finalmente, con los resultados obtenidos, se realizará la comparación entre la señal procesada con los filtros y la señal BOST proporcionada originalmente para, entonces, interpretar la señal. La magnitud resultante permite representar una señal unidimensional que integra la información vectorial del campo, la cual se grafica con el fin de facilitar su análisis e interpretación comparativa frente a otras referencias.
 
     \section{Resultados}
         \subsection{Adquisición de datos}
-            Los datos adquiridos tiene la siguiente visualización.
+            En las Figuras \ref{fig:bosx-original}, \ref{fig:bosy-original} y \ref{fig:bosz-original} se pueden observar las gráficas correspondientes a las señales originales de las componentes BOSX, BOSY y BOSZ, respectivamente. Como se ha expuesto en capítulos anteriores, estas señales presentan un nivel significativo de ruido en las frecuencias altas, lo cual dificulta una interpretación directa del comportamiento físico del campo magnético inducido en el entorno de Venus.
+
+            No obstante, a pesar del ruido presente, es posible identificar con claridad las principales tendencias de variación, las cuales se manifiestan predominantemente en el rango de frecuencias bajas. Estas variaciones reflejan las dinámicas de gran escala asociadas al entorno magnetoplasmático del planeta.
+	    
             \begin{figure}[!ht]
                 \centering
                 \includegraphics[width=1\linewidth]{../data/assets/BOSX.png}
@@ -281,12 +277,11 @@ La función principal de este filtro es rechazar una banda central de frecuencia
                 \label{fig:bosz-original}
             \end{figure}
 
-            Los 3 componentes, tal como se describe en capítulos anteriores, involucra mucho ruido de altas frecuencias en comparación con el comportamiento del campo magnético de Venus.
-
-            Sin embargo, son evidentes las tendencias de cambio principales que se encuentran en un rango muy bajo de frecuencias.
 
         \subsection{Procesamiento de señales}
-            Para comprender mejor las frecuencias que conforman la señal registrada por los sensores BOS, se procesaron las siguientes transformadas discretas de Fourier.
+           En las Figuras \ref{fig:fft-bosx-complete}, \ref{fig:fft-bosy-complete} y \ref{fig:fft-bosz-complete} se presentan las transformadas discretas de Fourier correspondientes a las señales originales de las componentes BOSX, BOSY y BOSZ, respectivamente. Estos espectros de frecuencia permiten analizar la distribución energética de cada señal en el dominio de las frecuencias.
+
+            Como se puede observar, en los tres casos la mayor parte de la energía se concentra en frecuencias muy cercanas a cero. Este resultado confirma que las principales variaciones en las señales ocurren en el rango de bajas frecuencias, lo cual es coherente con la naturaleza del campo magnético inducido en el entorno de Venus, caracterizado por procesos lentos y de gran escala.
 
             \begin{figure}[!ht]
                 \centering
@@ -309,9 +304,10 @@ La función principal de este filtro es rechazar una banda central de frecuencia
                 \label{fig:fft-bosz-complete}
             \end{figure}
 
-            En las tres transformaciones resultantes se puede observar que frecuencias muy cercanas a 0 predominan en la señal de cada componente.
+           
+En las Figuras \ref{fig:fft-bosx-partial}, \ref{fig:fft-bosy-partial} y \ref{fig:fft-bosz-partial} se muestran las representaciones espectrales de las componentes BOSX, BOSY y BOSZ, limitadas a los primeros 150 componentes de frecuencia obtenidos mediante la transformada discreta de Fourier. Esta visualización parcial permite realizar un análisis más detallado del contenido de bajas frecuencias en cada señal.
 
-            Para obtener un análisis más detallado, se dibujaron los primeros 150 componentes de las frecuencias de cada señal, mismas que se visualizan en las ilustraciones 7, 8 y 9 para los componentes BOSX, BOSY y BOSZ correspondientemente.
+            Se observa que, tanto en BOSY como en BOSZ, la mayor parte de la energía se concentra en frecuencias muy cercanas a cero, con valores que no superan los $2.5 \cdot 10^{-4}$ Hz. En contraste, la componente BOSX presenta un espectro más amplio, con múltiples componentes significativos en un rango mayor de frecuencias. Esto indica que la señal BOSX contiene un nivel más alto de contaminación espectral, lo cual sugiere una mayor presencia de ruido o interferencias en dicha componente.
 
             \begin{figure}[!ht]
                 \centering
@@ -335,9 +331,10 @@ La función principal de este filtro es rechazar una banda central de frecuencia
                 \label{fig:fft-bosz-partial}
             \end{figure}
 
-            En los componentes BOSY y BOSZ, la señal le da más relevancia a frecuencias cercanas a 0 y no mayores a $2.5\cdot 10^{-4} Hz$. Por otro lado, la señal de BOSX presenta un rango más amplio de frecuencias con un coeficiente mayor a 0. Esto significa que la señal BOSX tiene una contaminación considerable.
 
-            Para mantener los componentes de frecuencia congruentes entre las 3 señales y no perder los mínimos y máximos globales de la señal, se optó por eliminar las frecuencias superiores a $5\cdot 10^{-5}Hz$. Los resultados de este filtro se ven en las figuras 10, 11 y 12.
+ 	En las Figuras \ref{fig:bosx-hff}, \ref{fig:bosy-hff} y \ref{fig:bosz-hff} se presentan los resultados obtenidos tras aplicar un filtro pasa bajas a las componentes BOSX, BOSY y BOSZ, eliminando las frecuencias superiores a $5 \cdot 10^{-5}$ Hz. Esta decisión se tomó con el objetivo de mantener la congruencia entre los componentes de frecuencia de las tres señales, así como de preservar los mínimos y máximos globales presentes en la forma de onda original.
+
+        La aplicación de este filtro permite atenuar significativamente el ruido de alta frecuencia, conservando únicamente las variaciones de baja frecuencia que contienen la información más relevante del campo magnético inducido en el entorno de Venus.
 
             \begin{figure}[!ht]
                 \centering
@@ -361,7 +358,7 @@ La función principal de este filtro es rechazar una banda central de frecuencia
                 \label{fig:bosz-hff}
             \end{figure}
 
-            Estas señales filtradas, por sí solas, muestran congruencia con la señal esperada. Las transformaciones de Fourier de las tres señales se ilustran a continuación.
+            En las Figuras \ref{fig:fft-hff-bosx-complete}, \ref{fig:fft-hff-bosy-complete} y \ref{fig:fft-hff-bosz-complete} se muestran los espectros de frecuencia completos de las señales filtradas correspondientes a las componentes BOSX, BOSY y BOSZ, respectivamente. Estas señales, una vez procesadas, presentan un comportamiento más coherente con lo esperado para un campo magnético inducido.
 
             \begin{figure}[!ht]
                \centering
@@ -385,7 +382,10 @@ La función principal de este filtro es rechazar una banda central de frecuencia
                 \label{fig:fft-hff-bosz-complete}
             \end{figure}
 
-	  Para un mejor análisis, se dibujaron las gráficas de los primeros 25 componentes de frecuencia de las señales.
+	  En las Figuras \ref{fig:fft-hff-bosx-partial}, \ref{fig:fft-hff-bosy-partial} y \ref{fig:fft-hff-bosz-partial} se ilustran los primeros 25 componentes de frecuencia de las señales filtradas para las tres componentes del campo magnético: BOSX, BOSY y BOSZ. Esta visualización parcial permite examinar con mayor precisión el contenido espectral más relevante, concentrado en las frecuencias bajas.
+
+Durante el proceso de análisis se experimentó con la aplicación de filtros adicionales para intentar eliminar remanentes de ruido. Sin embargo, se observó que cualquier eliminación más agresiva de componentes de frecuencia afectaba negativamente la estructura de la señal, comprometiendo la integridad de la información asociada al fenómeno físico. Por lo tanto, se concluyó que el nivel actual de filtrado representa un equilibrio adecuado entre reducción de ruido y preservación de las características significativas del campo magnético inducido en Venus.
+
 	  
 	  \begin{figure}[!ht]
                \centering
@@ -408,10 +408,10 @@ La función principal de este filtro es rechazar una banda central de frecuencia
                 \label{fig:fft-hff-bosz-partial}
             \end{figure}
 
-	  Tras experimentar con la aplicación de otros filtros, se llegó a la conclusión de que cualquier intento de eliminar el resto de frecuencias de ruido impacta gravemente en la captura del fenómeno estudiado.
 
         \subsection{Cálculo del módulo total}
-	  Posterior a la limpieza de la señal, se procede a calcular la magnitud absoluta de la señal a lo largo del tiempo. La señal resultante (BOST filtrada) se ilustra en la siguiente figura.
+	  Posteriormente al proceso de limpieza de las señales individuales, se procedió al cálculo de la magnitud total del campo magnético a lo largo del tiempo, obtenida como la raíz cuadrada de la suma de los cuadrados de las tres componentes filtradas. En la Figura \ref{fig:bost-filtered} se presenta la señal BOST resultante tras el proceso de filtrado, la cual refleja de manera más clara las variaciones globales del campo, libre de las perturbaciones de alta frecuencia que afectaban las señales originales.
+
 
 	  \begin{figure}[!ht]
                \centering
@@ -422,19 +422,31 @@ La función principal de este filtro es rechazar una banda central de frecuencia
 	  \newpage
 
         \subsection{Comparación con BOST de la ESA}
-	  Finalmente, para evidenciar el contraste entre la señal original y la procesada, en la figura 20 se dibujan ambas señales.
+	
+	 Finalmente, con el objetivo de resaltar el impacto del proceso de filtrado, en la Figura \ref{fig:bost-comparisson} se presenta una comparación directa entre la señal BOST original y su versión filtrada. Esta superposición permite observar con claridad la atenuación del ruido de alta frecuencia y la conservación de las tendencias generales del campo magnético inducido.
+
+La figura evidencia cómo el filtrado mejora la legibilidad de la señal sin comprometer la estructura principal del fenómeno físico, facilitando así un análisis más preciso del comportamiento del campo magnético en el entorno de Venus.
+
 	  \begin{figure}[!ht]
                \centering
                 \includegraphics[width=1\linewidth]{../data/assets/BOST_comparisson.png}
                 \caption{Gráfica de comparación entre BOST original y BOST filtrada.}
                 \label{fig:bost-comparisson}
             \end{figure}
+	    
     \section{Conclusiones}
 	  \subsection{Interpretación de la señal resultante}
-	  	  De acuerdo con el contexto anteriormente mencionado, esta señal indica que el campo magnético presente en Venus es uno meramente reactivo ante la actividad solar, puesto que, al encontrarse en la cara opuesta al sol de Venus, el campo magnético desciende a valores muy bajos, mientras que presenta lecturas más altas cuando se encuentra expuesto a la actividad solar. Esto evidencia que el planeta no genera su propio campo magnético ocasionado por algún otro fenómeno interno que no involucre la ionósfera. Por lo tanto, Venus no tiene un campo magnético propio.
-	  \subsection{Aplicación de filtros}
-	  	  Las herramientas estudiadas en el semestre permitieron analizar y filtrar aceptablemente la señal que refleja el comportamiento de un fenómeno real. Esto, en consecuencia, demuestra que las herramientas estudiadas permiten el diseño de métodos de tratamiento y adquisición de señales discretas muestreadas por instrumentos digitales.
+	  	 
+                La señal procesada revela que el campo magnético en Venus no es generado de manera interna, sino que responde directamente a la interacción con la actividad solar. Esto se observa al analizar los valores registrados: cuando el satélite se encuentra en la cara de Venus expuesta al Sol, las lecturas del campo magnético aumentan significativamente; en cambio, al pasar por la cara oculta, los valores descienden hasta volverse casi nulos.
+                
+                Este patrón indica que el campo magnético es inducido por el viento solar al interactuar con la ionósfera venusina, en lugar de provenir de un mecanismo interno, tal como ocurre en la Tierra. Por lo tanto, se concluye que Venus no posee un campo magnético propio, sino uno inducido externamente, dependiente de las condiciones solares.
 
+  
+	  \subsection{Aplicación de filtros}
+	  	  Las herramientas teóricas y computacionales estudiadas a lo largo del semestre permitieron analizar, procesar y filtrar adecuadamente la señal obtenida por los sensores, logrando así reflejar de manera más clara el comportamiento de un fenómeno físico real.
+            
+            Este resultado valida la utilidad de los métodos trabajados en clase, al demostrar que es posible diseñar procedimientos efectivos para el tratamiento y la adquisición de señales discretas muestreadas mediante instrumentos digitales. En particular, el uso de filtros adecuados y el análisis en el dominio de la frecuencia permitieron destacar las características relevantes del campo magnético inducido en Venus, eliminando componentes no deseadas y facilitando su interpretación científica.
+	    
     \begin{thebibliography}{10}
 
         \bibitem{zhan2006}
