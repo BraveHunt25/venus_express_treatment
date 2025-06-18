@@ -226,6 +226,15 @@ donde:
 \vspace{0.2cm}
 La elección adecuada de \( R \) y \( C \) permite controlar qué tan rápido se atenúan las frecuencias más altas, asegurando que se conserve el contenido significativo de la señal mientras se eliminan fluctuaciones no deseadas.
 
+\subsection{Filtro rechaza bandas}
+Un filtro rechaza bandas es un tipo de filtro diseñado para atenuar o eliminar una rango específico de frecuencias, mientras que deja pasar tanto las frecuencias más bajas como las más altas. Es útil cuando se desea suprimir una banda de frecuencias no deseadas, como ruido o interferencias, sin afectar el resto del contenido espectral \cite{oppenheim2010}.
+
+La función principal de este filtro es rechazar una banda central de frecuencia \( f_c \), definida entre dos frecuencias: la frecuencia de corte inferior \textit{ \( f_L \)} y la frecuencia de corte superior \textit{ \( f_H \)}. El ancho de la banda eliminada se conoce como el ancho de banda de rechazo y se calcula de la siguiente manera:
+
+\begin{equation}
+\Delta f = f_H - f_L
+\end{equation}
+
 % A lo largo del desarrollo, si es necesario, solo agregaría algunos fenómenos que disturben las lecturas esperadas.
     \section{Metodología}
         A continuación, se describe el procedimiento a seguir para obtener la señal filtrada. En \cite{repogithub} se encuentra disponible el cuaderno de pruebas .IPYNB con la trayectoria del desarrollo y comentarios necesarios para comprender el código desarrollado.
