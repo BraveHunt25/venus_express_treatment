@@ -1,0 +1,5 @@
+# tex files
+document/*
+!document/main.pdf
+!document/main.tex
+!document/assets
